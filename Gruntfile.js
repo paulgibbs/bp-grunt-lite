@@ -22,6 +22,34 @@ module.exports = function( grunt ) {
 		'bp-messages/js/*.js',
 		'bp-templates/bp-legacy/js/*.js',
 		'bp-xprofile/admin/js/*.js'
+	],
+
+	BP_EXCLUDED_FILES = [
+		// Ignore these
+		'!tests/**',  // unit tests
+		'!Gruntfile.js',
+		'!package.json',
+		'!.gitignore',
+		'!.jshintrc',
+		'!.travis.yml',
+
+		// And these from .gitignore
+		'!**/.{svn,git}/**',
+		'!lib-cov/**',
+		'!*.seed',
+		'!*.log',
+		'!*.csv',
+		'!*.dat',
+		'!*.out',
+		'!*.pid',
+		'!*.gz',
+		'!pids/**',
+		'!logs/**',
+		'!results/**',
+		'!.DS_Store',
+		'!node_modules/**',
+		'!npm-debug.log',
+		'!build/**'
 	];
 
 	// Load tasks.
@@ -40,35 +68,7 @@ module.exports = function( grunt ) {
 						dest: BUILD_DIR,
 						dot: true,
 						expand: true,
-						src: [
-							'**',
-
-							// Ignore these
-							'!tests/**',  // unit tests
-							'!Gruntfile.js',
-							'!package.json',
-							'!.gitignore',
-							'!.jshintrc',
-							'!.travis.yml',
-
-							// And these from .gitignore
-							'!**/.{svn,git}/**',
-							'!lib-cov/**',
-							'!*.seed',
-							'!*.log',
-							'!*.csv',
-							'!*.dat',
-							'!*.out',
-							'!*.pid',
-							'!*.gz',
-							'!pids/**',
-							'!logs/**',
-							'!results/**',
-							'!.DS_Store',
-							'!node_modules/**',
-							'!npm-debug.log',
-							'!build/**'
-						]
+						src: new Array( '**' ).concat( BP_EXCLUDED_FILES )
 					}
 				]
 			}
@@ -94,9 +94,6 @@ module.exports = function( grunt ) {
 		},
 		jshint: {
 			options: grunt.file.readJSON( '.jshintrc' ),
-			grunt: {
-				src: [ 'Gruntfile.js' ]
-			},
 			core: {
 				expand: true,
 				cwd: SOURCE_DIR,
@@ -138,6 +135,11 @@ module.exports = function( grunt ) {
 			build: {
 				files: {
 					src: BUILD_DIR + '/**/*.js'
+				}
+			},
+			dev: {
+				files: {
+					src: new Array( '**/*.js' ).concat( BP_EXCLUDED_FILES )
 				}
 			}
 		},
@@ -197,11 +199,6 @@ module.exports = function( grunt ) {
 	});
 
 
-	// Build tasks.
-	grunt.registerTask( 'build',         [ 'clean:all',                'copy:files', 'cssjanus:core', 'cssmin:css', 'jsvalidate:build', 'uglify:core', 'exec:bbpress' ] );
-	grunt.registerTask( 'build-release', [ 'clean:all', 'phpunit:all', 'copy:files', 'cssjanus:core', 'cssmin:css', 'jsvalidate:build', 'uglify:core', 'exec:bbpress' ] );
-
-	// Testing tasks.
 	grunt.registerMultiTask( 'phpunit', 'Runs PHPUnit tests, including the ajax and multisite tests.', function() {
 		grunt.util.spawn( {
 			cmd:  this.data.cmd,
@@ -210,8 +207,11 @@ module.exports = function( grunt ) {
 		}, this.async() );
 	});
 
-	grunt.registerTask( 'test', 'Runs all unit tasks.', [ 'phpunit' ] );
+	// Build tasks.
+	grunt.registerTask( 'dev',     [ 'clean:all', 'jsvalidate:dev' ] );
+	grunt.registerTask( 'test',    [ 'phpunit' ] );
+	grunt.registerTask( 'release', [ 'clean:all', 'phpunit:all', 'copy:files', 'cssjanus:core', 'cssmin:css', 'jsvalidate:build', 'uglify:core', 'exec:bbpress' ] );
 
 	// Default task.
-	grunt.registerTask( 'default', [ 'build' ] );
+	grunt.registerTask( 'default', [ 'dev' ] );
 };
