@@ -4,17 +4,7 @@ module.exports = function( grunt ) {
 	SOURCE_DIR = '',
 	BUILD_DIR  = 'build/',
 
-	// RTL from cssjanus
-	BP_RTL_CSS = [
-		'bp-activity/admin/css/*-rtl.css',
-		'bp-core/admin/css/*-rtl.css',
-		'bp-core/css/*-rtl.css',
-		'bp-groups/admin/css/*-rtl.css',
-		'bp-messages/css/*-rtl.css',
-		'bp-templates/bp-legacy/css/*-rtl.css',
-		'bp-xprofile/admin/css/*-rtl.css'
-	],
-	BP_LTR_CSS = [
+	BP_CSS = [
 		'bp-activity/admin/css/*.css',
 		'bp-core/admin/css/*.css',
 		'bp-core/css/*.css',
@@ -41,13 +31,7 @@ module.exports = function( grunt ) {
 	// Project configuration.
 	grunt.initConfig({
 		clean: {
-			all: [ BUILD_DIR ],
-			dynamic: {
-				cwd: BUILD_DIR,
-				dot: true,
-				expand: true,
-				src: []
-			}
+			all: [ BUILD_DIR ]
 		},
 		copy: {
 			files: {
@@ -62,6 +46,11 @@ module.exports = function( grunt ) {
 
 							// Ignore these
 							'!tests/**',  // unit tests
+							'!Gruntfile.js',
+							'!package.json',
+							'!.gitignore',
+							'!.jshintrc',
+							'!.travis.yml',
 
 							// And these from .gitignore
 							'!**/.{svn,git}/**',
@@ -83,48 +72,25 @@ module.exports = function( grunt ) {
 						]
 					}
 				]
-			},
-			dynamic: {
-				cwd: SOURCE_DIR,
-				dest: BUILD_DIR,
-				dot: true,
-				expand: true,
-				src: []
-			}
-		},
-		cssmin: {
-			ltr: {
-				cwd: SOURCE_DIR,
-				dest: BUILD_DIR,
-				expand: true,
-				ext: '.min.css',
-				src: BP_LTR_CSS,
-				options: { banner: '/*! https://wordpress.org/plugins/buddypress/ */' }
-			},
-			rtl: {
-				cwd: BUILD_DIR,
-				dest: BUILD_DIR,
-				expand: true,
-				ext: '.min.css',
-				src: BP_RTL_CSS,
-				options: { banner: '/*! https://wordpress.org/plugins/buddypress/ */' }
 			}
 		},
 		cssjanus: {
 			core: {
 				expand: true,
-				cwd: SOURCE_DIR,
+				cwd: BUILD_DIR,
 				dest: BUILD_DIR,
 				ext: '-rtl.css',
-				src: BP_LTR_CSS,
+				src: BP_CSS,
 				options: { generateExactDuplicates: true }
-			},
-			dynamic: {
-				expand: true,
-				cwd: SOURCE_DIR,
+			}
+		},
+		cssmin: {
+			css: {
+				cwd: BUILD_DIR,
 				dest: BUILD_DIR,
-				ext: '-rtl.css',
-				src: []
+				expand: true,
+				src: BP_CSS,
+				options: { banner: '/*! https://wordpress.org/plugins/buddypress/ */' }
 			}
 		},
 		jshint: {
@@ -164,12 +130,23 @@ module.exports = function( grunt ) {
 				}
 			}
 		},
+		jsvalidate:{
+			options:{
+				globals: {},
+				esprimaOptions:{},
+				verbose: false
+			},
+			build: {
+				files: {
+					src: BUILD_DIR + '/**/*.js'
+				}
+			}
+		},
 		uglify: {
 			core: {
-				cwd: SOURCE_DIR,
+				cwd: BUILD_DIR,
 				dest: BUILD_DIR,
 				expand: true,
-				ext: '.min.js',
 				src: BP_JS
 			},
 			options: {
@@ -184,18 +161,6 @@ module.exports = function( grunt ) {
 			multisite: {
 				cmd: 'phpunit',
 				args: ['-c', 'tests/phpunit/multisite.xml']
-			}
-		},
-		jsvalidate:{
-			options:{
-				globals: {},
-				esprimaOptions:{},
-				verbose: false
-			},
-			build: {
-				files: {
-					src: BUILD_DIR + '/**/*.js'
-				}
 			}
 		},
 		watch: {
@@ -213,7 +178,7 @@ module.exports = function( grunt ) {
 				}
 			},
 			rtl: {
-				files: BP_LTR_CSS.map( function( path ) {
+				files: BP_CSS.map( function( path ) {
 					return SOURCE_DIR + path;
 				} ),
 				tasks: [ 'cssjanus:dynamic' ],
@@ -223,16 +188,10 @@ module.exports = function( grunt ) {
 				}
 			}
 		},
-
 		exec: {
 			bbpress: {
 				command: 'svn export https://bbpress.svn.wordpress.org/tags/1.2 bbpress',
 				cwd: BUILD_DIR + 'bp-forums',
-				stdout: false
-			},
-			bpdefault: {
-				command: 'mkdir bp-themes && cp -R ../tools/bp-default bp-themes/',
-				cwd: BUILD_DIR,
 				stdout: false
 			}
 		}
@@ -240,8 +199,8 @@ module.exports = function( grunt ) {
 
 
 	// Build tasks.
-	grunt.registerTask( 'build',         [ 'clean:all', 'copy:files', 'cssjanus:core', 'cssmin:ltr', 'cssmin:rtl', 'uglify:core', 'jsvalidate:build' ] );
-	grunt.registerTask( 'build-release', [ 'clean:all', 'copy:files', 'cssjanus:core', 'cssmin:ltr', 'cssmin:rtl', 'uglify:core', 'jsvalidate:build', 'exec:bpdefault', 'exec:bbpress', 'phpunit:all' ] );
+	grunt.registerTask( 'build',         [ 'clean:all',                'copy:files', 'cssjanus:core', 'cssmin:css', 'jsvalidate:build', 'uglify:core', 'exec:bbpress' ] );
+	grunt.registerTask( 'build-release', [ 'clean:all', 'phpunit:all', 'copy:files', 'cssjanus:core', 'cssmin:css', 'jsvalidate:build', 'uglify:core', 'exec:bbpress' ] );
 
 	// Testing tasks.
 	grunt.registerMultiTask( 'phpunit', 'Runs PHPUnit tests, including the ajax and multisite tests.', function() {
@@ -256,23 +215,4 @@ module.exports = function( grunt ) {
 
 	// Default task.
 	grunt.registerTask( 'default', [ 'build' ] );
-
-
-	// Add a listener to the watch task.
-	//
-	// On `watch:all`, automatically updates the `copy:dynamic` and `clean:dynamic` configurations so that only the changed files are updated.
-	// On `watch:rtl`, automatically updates the `cssjanus:dynamic` configuration.
-	grunt.event.on( 'watch', function( action, filepath, target ) {
-		if ( target !== 'all' && target !== 'rtl' ) {
-			return;
-		}
-
-		var relativePath = path.relative( SOURCE_DIR, filepath ),
-		cleanSrc = ( action === 'deleted' ) ? [ relativePath ] : [],
-		copySrc  = ( action === 'deleted' ) ? [] : [ relativePath ];
-
-		grunt.config( [ 'clean', 'dynamic', 'src' ], cleanSrc );
-		grunt.config( [ 'copy', 'dynamic', 'src' ], copySrc );
-		grunt.config( [ 'cssjanus', 'dynamic', 'src' ], copySrc );
-	});
 };
