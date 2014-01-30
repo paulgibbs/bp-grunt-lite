@@ -157,11 +157,11 @@ module.exports = function( grunt ) {
 		phpunit: {
 			'default': {
 				cmd: 'phpunit',
-				args: ['-c', 'phpunit.xml']
+				args: ['-c', 'tests/phpunit.xml']
 			},
 			multisite: {
 				cmd: 'phpunit',
-				args: ['-c', 'tests/phpunit/multisite.xml']
+				args: ['-c', 'tests/multisite.xml']
 			}
 		},
 		watch: {
@@ -210,7 +210,7 @@ module.exports = function( grunt ) {
 	// Build tasks.
 	grunt.registerTask( 'dev',     [ 'clean:all', 'jsvalidate:dev' ] );
 	grunt.registerTask( 'test',    [ 'phpunit' ] );
-	grunt.registerTask( 'release', [ 'clean:all', 'phpunit:all', 'copy:files', 'cssjanus:core', 'cssmin:css', 'jsvalidate:build', 'uglify:core', 'exec:bbpress' ] );
+	grunt.registerTask( 'release', [ 'clean:all', 'phpunit', 'copy:files', 'cssjanus:core', 'cssmin:css', 'jsvalidate:build', 'uglify:core', 'exec:bbpress' ] );
 
 	// Default task.
 	grunt.registerTask( 'default', [ 'dev' ] );
