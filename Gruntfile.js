@@ -164,31 +164,6 @@ module.exports = function( grunt ) {
 				args: ['-c', 'tests/multisite.xml']
 			}
 		},
-		watch: {
-			all: {
-				files: [
-					SOURCE_DIR + '**',
-					// Ignore version control directories.
-					'!' + SOURCE_DIR + '**/.{svn,git}/**'
-				],
-				tasks: [ 'clean:dynamic', 'copy:dynamic' ],
-				options: {
-					dot: true,
-					interval: 2000,
-					spawn: false
-				}
-			},
-			rtl: {
-				files: BP_CSS.map( function( path ) {
-					return SOURCE_DIR + path;
-				} ),
-				tasks: [ 'cssjanus:dynamic' ],
-				options: {
-					interval: 2000,
-					spawn: false
-				}
-			}
-		},
 		exec: {
 			bbpress: {
 				command: 'svn export https://bbpress.svn.wordpress.org/tags/1.2 bbpress',
