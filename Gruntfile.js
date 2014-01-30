@@ -1,7 +1,7 @@
 /* jshint node:true */
 module.exports = function( grunt ) {
 	var path = require( 'path' ),
-	SOURCE_DIR = 'src/',
+	SOURCE_DIR = '',
 	BUILD_DIR  = 'build/',
 
 	// RTL from cssjanus
@@ -57,7 +57,30 @@ module.exports = function( grunt ) {
 						dest: BUILD_DIR,
 						dot: true,
 						expand: true,
-						src: [ '!**/.{svn,git}/**', '**' ] // Ignore version control directories.
+						src: [
+							'**',
+
+							// Ignore these
+							'!tests/**',  // unit tests
+
+							// And these from .gitignore
+							'!**/.{svn,git}/**',
+							'!lib-cov/**',
+							'!*.seed',
+							'!*.log',
+							'!*.csv',
+							'!*.dat',
+							'!*.out',
+							'!*.pid',
+							'!*.gz',
+							'!pids/**',
+							'!logs/**',
+							'!results/**',
+							'!.DS_Store',
+							'!node_modules/**',
+							'!npm-debug.log',
+							'!build/**'
+						]
 					}
 				]
 			},
