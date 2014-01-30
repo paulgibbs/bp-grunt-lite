@@ -1,33 +1,33 @@
 {
-  "author": "The BuddyPress Community",
-  "bugs": { "url": "https://buddypress.trac.wordpress.org/" },
-  "description": "Social networking in a box. Build a social network for your company, school, sports team, or niche community.",
-  "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-copy": "~0.4.1",
-    "grunt-contrib-cssmin": "~0.6.1",
-    "grunt-contrib-uglify": "~0.2.2",
-    "grunt-contrib-watch": "~0.5.1",
-    "grunt-contrib-jshint": "~0.7.0",
-    "grunt-cssjanus": "~0.1.1",
-    "grunt-phpunit": "~0.3.0",
-    "grunt-jsvalidate": "~0.2.2",
-    "matchdep": "~0.1.2",
-    "grunt-exec": "~0.4.3"
-  },
-  "homepage": "https://buddypress.org",
-  "keywords": [
-    "WordPress",
-    "social",
-    "network",
-    "plugin"
-  ],
-  "license": "GPL-2.0+",
-  "name": "buddypress",
-  "repository": {
-    "type": "svn",
-    "url": "https://buddypress.svn.wordpress.org/trunk"
-  },
-  "version": "2.0.0"
+	"author": "The BuddyPress Community",
+	"bugs": { "url": "https://buddypress.trac.wordpress.org/" },
+	"description": "Social networking in a box. Build a social network for your company, school, sports team, or niche community.",
+	"devDependencies": {
+		"grunt": "~0.4.1",
+		"grunt-contrib-clean": "~0.5.0",
+		"grunt-contrib-copy": "~0.4.1",
+		"grunt-contrib-cssmin": "~0.6.1",
+		"grunt-contrib-uglify": "~0.2.2",
+		"grunt-contrib-watch": "~0.5.1",
+		"grunt-contrib-jshint": "~0.7.0",
+		"grunt-cssjanus": "~0.1.1",
+		"grunt-phpunit": "~0.3.0",
+		"grunt-jsvalidate": "~0.2.2",
+		"matchdep": "~0.1.2",
+		"grunt-exec": "~0.4.3"
+	},
+	"homepage": "https://buddypress.org",
+	"keywords": [
+		"WordPress",
+		"social",
+		"network",
+		"plugin"
+	],
+	"license": "GPL-2.0+",
+	"name": "buddypress",
+	"repository": {
+		"type": "svn",
+		"url": "https://buddypress.svn.wordpress.org/trunk"
+	},
+	"version": "2.0.0"
 }
