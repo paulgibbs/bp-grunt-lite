@@ -1,7 +1,7 @@
 /* jshint node:true */
 module.exports = function( grunt ) {
 	var SOURCE_DIR = '',
-	BUILD_DIR  = 'build/',
+	BUILD_DIR = 'build/',
 
 	BP_CSS = [
 		'bp-activity/admin/css/*.css',
@@ -133,14 +133,10 @@ module.exports = function( grunt ) {
 				verbose: false
 			},
 			build: {
-				files: {
-					src: BUILD_DIR + '/**/*.js'
-				}
+				files: { src: BUILD_DIR + '/**/*.js' }
 			},
 			dev: {
-				files: {
-					src: new Array( '**/*.js' ).concat( BP_EXCLUDED_FILES )
-				}
+				files: { src: BP_JS }
 			}
 		},
 		uglify: {
